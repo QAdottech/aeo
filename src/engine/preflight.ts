@@ -7,6 +7,7 @@ import {
   detectAgentClis,
   versionForSurface,
 } from '../probes/agent-clis';
+import { cliAdapterProfiles } from '../probes/adapters/cli-agents';
 import {
   bindingOf,
   probeAdapterProfiles,
@@ -81,7 +82,9 @@ export const credentialSettingNames: readonly string[] = [
 export const runSettingNames = [
   gatewaySetting,
   ...overviewSettings,
-  ...Object.values(agentAuthEnv).flatMap((auth) => auth.anyOf),
+  ...Object.values(cliAdapterProfiles).flatMap((profile) =>
+    profile.settings.map((setting) => setting.name),
+  ),
 ];
 
 // A coding agent's probes bill its own plan, outside the run's cap; an

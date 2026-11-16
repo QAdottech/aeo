@@ -352,6 +352,7 @@ describe('preflight - runPreflight()', () => {
       'CODEX_HOME',
       'CLAUDE_CODE_OAUTH_TOKEN',
       'ANTHROPIC_API_KEY',
+      'ANTHROPIC_AUTH_TOKEN',
     ]) {
       vi.stubEnv(name, undefined);
     }
@@ -489,6 +490,13 @@ describe('preflight - runPreflight()', () => {
     );
     expect(await detailWith('CLAUDE_CODE_OAUTH_TOKEN=fake-token\n')).toMatch(
       /; authenticates with CLAUDE_CODE_OAUTH_TOKEN$/,
+    );
+    expect(
+      await detailWith(
+        'ANTHROPIC_AUTH_TOKEN=fake-gateway-token\nANTHROPIC_BASE_URL=https://gateway.example\n',
+      ),
+    ).toMatch(
+      /; authenticates with ANTHROPIC_AUTH_TOKEN, billed to that gateway account outside the run's cap$/,
     );
   });
 
