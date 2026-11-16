@@ -67,6 +67,35 @@ describe('agent-clis - the CLI child environment', () => {
     },
   );
 
+  it.each(['claude_code', 'codex', 'cursor'] as const)(
+    'should hand %s the account name its own login is looked up by',
+    async (surface) => {
+      const { outcomes } = await runAgentProbesForPrompts({
+        prompts: [prompt],
+        surfaces: [surface],
+        versions: { claudeCode: 'fake', codex: 'fake', cursor: 'fake' },
+        runsPerPrompt: 1,
+        runtime: await host.runtime({
+          mode: 'env-dump',
+          env: { USER: 'operator', LOGNAME: 'operator' },
+        }),
+        limiter: unlimited(),
+      });
+      const [outcome] = outcomes;
+
+      if (outcome?.status !== 'captured') {
+        throw new Error(`The ${surface} probe was not captured.`);
+      }
+
+      const childEnv = JSON.parse(outcome.probe.text) as Record<string, string>;
+
+      expect({ USER: childEnv.USER, LOGNAME: childEnv.LOGNAME }).toEqual({
+        USER: 'operator',
+        LOGNAME: 'operator',
+      });
+    },
+  );
+
   it("should take Codex's sandbox from the runtime it was given, never the process environment", async () => {
     const sandboxOf = async (env: Record<string, string>) => {
       const { outcomes } = await runAgentProbesForPrompts({
