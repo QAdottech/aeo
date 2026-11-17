@@ -237,6 +237,10 @@ export const runChild = (
 const baseEnvKeys = [
   'PATH',
   'HOME',
+  // macOS: a CLI's own login lives in the login Keychain, which Claude Code
+  // looks up by account name; without these it reports "Not logged in".
+  'USER',
+  'LOGNAME',
   'TMPDIR',
   'LANG',
   'LC_ALL',
