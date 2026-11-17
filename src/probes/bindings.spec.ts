@@ -195,6 +195,7 @@ describe('preflight - credentialSettingNames', () => {
         'AEO_SITE_DATABASE_URL',
         'AI_GATEWAY_API_KEY',
         'ANTHROPIC_API_KEY',
+        'ANTHROPIC_AUTH_TOKEN',
         'CLAUDE_CODE_OAUTH_TOKEN',
         'CURSOR_API_KEY',
         'DATAFORSEO_PASSWORD',
@@ -285,7 +286,11 @@ describe('agent-clis - agentAuthEnv', () => {
       codex: agentAuthEnv.codex.anyOf,
       cursor: agentAuthEnv.cursor.anyOf,
     }).toEqual({
-      claude_code: ['CLAUDE_CODE_OAUTH_TOKEN', 'ANTHROPIC_API_KEY'],
+      claude_code: [
+        'CLAUDE_CODE_OAUTH_TOKEN',
+        'ANTHROPIC_API_KEY',
+        'ANTHROPIC_AUTH_TOKEN',
+      ],
       codex: ['OPENAI_API_KEY', 'CODEX_HOME'],
       cursor: ['CURSOR_API_KEY'],
     });

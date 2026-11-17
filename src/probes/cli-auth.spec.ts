@@ -21,6 +21,7 @@ const parentEnv = {
   // Every agent's auth variables, with values the dump can be matched on.
   CLAUDE_CODE_OAUTH_TOKEN: 'fake-claude-token',
   ANTHROPIC_API_KEY: 'fake-anthropic-key',
+  ANTHROPIC_AUTH_TOKEN: 'fake-gateway-token',
   OPENAI_API_KEY: 'fake-openai-key',
   CODEX_HOME: '/fake/codex-home',
   CURSOR_API_KEY: 'fake-cursor-key',
@@ -64,6 +65,36 @@ describe('agent-clis - the CLI child environment', () => {
       const received = secretNames.filter((name) => name in childEnv).sort();
 
       expect(received).toEqual([...agentAuthEnv[surface].anyOf].sort());
+    },
+  );
+
+  it.each([
+    ['claude_code', 'https://gateway.example'],
+    ['codex', undefined],
+    ['cursor', undefined],
+  ] as const)(
+    'should hand the gateway address to Claude Code only (%s)',
+    async (surface, expected) => {
+      const { outcomes } = await runAgentProbesForPrompts({
+        prompts: [prompt],
+        surfaces: [surface],
+        versions: { claudeCode: 'fake', codex: 'fake', cursor: 'fake' },
+        runsPerPrompt: 1,
+        runtime: await host.runtime({
+          mode: 'env-dump',
+          env: { ANTHROPIC_BASE_URL: 'https://gateway.example' },
+        }),
+        limiter: unlimited(),
+      });
+      const [outcome] = outcomes;
+
+      if (outcome?.status !== 'captured') {
+        throw new Error(`The ${surface} probe was not captured.`);
+      }
+
+      const childEnv = JSON.parse(outcome.probe.text) as Record<string, string>;
+
+      expect(childEnv.ANTHROPIC_BASE_URL).toBe(expected);
     },
   );
 
