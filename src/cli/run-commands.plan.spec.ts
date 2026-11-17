@@ -51,7 +51,7 @@ describe('run-commands - runPlan()', () => {
     const output = stdout.mock.calls.map(([text]) => String(text)).join('');
 
     expect(output).toContain(
-      "on its own login, your plan; on ANTHROPIC_API_KEY, that Anthropic account, outside this run's cap",
+      "on its own login, your plan; on ANTHROPIC_API_KEY, that Anthropic account; on ANTHROPIC_AUTH_TOKEN, that gateway account, outside this run's cap",
     );
     expect(output).toContain(
       "on its own login, your plan; on OPENAI_API_KEY, that OpenAI account, outside this run's cap",

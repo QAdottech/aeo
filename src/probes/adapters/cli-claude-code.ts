@@ -6,7 +6,6 @@ import { parseClaudeCodeStream } from '../agent-cli-parsers';
 import { childEnv } from '../child-process';
 import {
   attachCliOutput,
-  authSettingNames,
   execCli,
   withScratchDir,
   type AgentProbeFn,
@@ -23,6 +22,17 @@ export const claudeCodeProfile: ProbeAdapterProfile = {
       group: 'auth',
       billsAccount: 'Anthropic',
     },
+    // A bearer token for an Anthropic-compatible gateway at
+    // ANTHROPIC_BASE_URL. Unlike the CLI's own login, it carries no account
+    // identity: a logged-in Claude Code tells the model the account's email,
+    // which tilts an audit run from the audited company's own account.
+    {
+      name: 'ANTHROPIC_AUTH_TOKEN',
+      secret: true,
+      group: 'auth',
+      billsAccount: 'gateway',
+    },
+    { name: 'ANTHROPIC_BASE_URL', secret: false },
   ],
   pool: 'claude_code',
   retry: 'agent',
@@ -31,10 +41,10 @@ export const claudeCodeProfile: ProbeAdapterProfile = {
   resolvesRedirects: false,
 };
 
-// Claude Code's auth variables and its config directory, nothing else from
-// the parent (§4.5).
+// Claude Code's settings and its config directory, nothing else from the
+// parent (§4.5).
 const claudeEnvKeys = [
-  ...authSettingNames(claudeCodeProfile),
+  ...claudeCodeProfile.settings.map((setting) => setting.name),
   'CLAUDE_CONFIG_DIR',
 ];
 

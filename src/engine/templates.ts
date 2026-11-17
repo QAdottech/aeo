@@ -71,4 +71,9 @@ DATAFORSEO_PASSWORD=
 CLAUDE_CODE_OAUTH_TOKEN=
 OPENAI_API_KEY=
 CURSOR_API_KEY=
+
+# Claude Code through an Anthropic-compatible gateway, with no account
+# identity (a logged-in Claude Code tells the model the account's email).
+ANTHROPIC_AUTH_TOKEN=
+ANTHROPIC_BASE_URL=
 `;

@@ -69,7 +69,10 @@ run needs reports present.
 
 Coding-agent surfaces (Claude Code, Codex, Cursor) are measured with the
 CLI's own login on this machine. They matter most when the buyers are
-developers. If the user cannot or will not set one up, remove it from
+developers. A logged-in Claude Code tells the model the account's email, so
+when the user audits their own company from their own account, suggest
+`ANTHROPIC_API_KEY`, or `ANTHROPIC_AUTH_TOKEN` with `ANTHROPIC_BASE_URL`
+for a gateway, in `.env` instead. If the user cannot or will not set one up, remove it from
 `surfaces` in `audit.json` in checkpoint 5 and tell them it is now out of
 scope for this audit.
 
