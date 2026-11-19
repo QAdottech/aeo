@@ -76,6 +76,10 @@ missing setting, failed canary, a live writer holding the run), or an
 unsupported bundle; 3 done with disclosed limitations; 128 plus the signal
 number when interrupted.`;
 
+// The banner goes to stderr before any command runs, so the usage a failed
+// command reports must not repeat it; only --help prints it.
+const usageBody = usageText.slice(usageText.indexOf('\n\n') + 2);
+
 const main = async (argv: readonly string[]) => {
   const flags = parseFlags(argv);
   const [command, ...rest] = flags.positional;
@@ -105,28 +109,28 @@ const main = async (argv: readonly string[]) => {
       return runRun(commandFlags);
 
     case 'rejudge':
-      return runRejudge(commandFlags, usageText);
+      return runRejudge(commandFlags, usageBody);
 
     case 'author':
-      return runAuthor(commandFlags, usageText);
+      return runAuthor(commandFlags, usageBody);
 
     case 'export':
-      return runExport(commandFlags, usageText);
+      return runExport(commandFlags, usageBody);
 
     case 'verify':
-      return runVerify(commandFlags, usageText);
+      return runVerify(commandFlags, usageBody);
 
     case 'view':
-      return runView(commandFlags, usageText);
+      return runView(commandFlags, usageBody);
 
     case 'status':
-      return runStatus(commandFlags, usageText);
+      return runStatus(commandFlags, usageBody);
 
     case 'guide':
       return runGuide(commandFlags);
 
     default:
-      throw new Error(usageText);
+      throw new Error(usageBody);
   }
 };
 
